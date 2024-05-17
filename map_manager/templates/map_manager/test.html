@@ -1,10 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=В26b914ca-5401-44b0-b136-b7d9c35bb1a8&lang=ru_RU"
+            type="text/javascript"></script>
+
+    <script type="text/javascript">
+        ymaps.ready(init);
+
+        let isPlaceMarkCreated = false
+        let balun = null // контейнер, куда положим балун синглтон
+        let myMap = null;
+
+        function init() {
+            myMap = new ymaps.Map("map", {
+                center: [55.76, 37.64],
+                zoom: 5
+            });
+
+            myMap.controls.add('zoomControl');
+            myMap.controls.add('typeSelector');
+            myMap.controls.add('searchControl');
+
+            myMap.events.add('click', function (e) {
+                let coords = e.get('coords');
+                console.log(coords);
+                if (isPlaceMarkCreated) {
+                    myMap.panTo(coords, {duration: 500});
+                    balun.geometry.setCoordinates(coords);
+                } else {
+                    addPlaceMark(coords)
+                    isPlaceMarkCreated = true
+                }
+
+            });
+
+        }
+
+        function addPlaceMark(coords) {
+            balun = new ymaps.Placemark(coords, {
+                iconContent: 'Вызвать авиаудар'
+            }, {
+                balloonPanelMaxMapArea: 0,
+                draggable: "true",
+                preset: "islands#blueStretchyIcon",
+                {#openEmptyBalloon: true#}
+            })
+            myMap.geoObjects.add(balun);
+        }
+    </script>
+
+
+    <title>test map</title>
 </head>
 <body>
+test
+<div id="map" style="width: 600px; height: 400px;"></div>
 test
 </body>
 </html>

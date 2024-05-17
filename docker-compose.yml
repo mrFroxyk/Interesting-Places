@@ -5,8 +5,26 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      DB_NAME: django
+      DB_USER: admin
+      DB_PASSWORD: admin
     volumes:
       - .:/code
     ports:
-      - "8000:8000"
-    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+      - "5000:5000"
+    command: ["python", "manage.py", "runserver", "0.0.0.0:5000"]
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: django
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdbdata:/var/lib/postgresql/data/
+
+volumes:
+  pgdbdata: null
