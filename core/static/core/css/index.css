@@ -1,0 +1,39 @@
+nav {
+    /*background: #4ac1f7;*/
+    background-image: url("../img/nav_fon_small.png");
+    height: 223px;
+    width: 1920px;
+    /*height: 100px;*/
+    /*width: 100px;*/
+}
+
+.wrapper {
+    background-image:url("../img/inf fon.jpg");
+    background-attachment: fixed;
+}
+
+.footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 30px;
+    background: #1b1b1b;
+    color: white;
+    font-size: 1em;
+    height: 200px;
+}
+
+/**::-webkit-scrollbar {*/
+/*    width: 10px;*/
+/*}*/
+
+/**::-webkit-scrollbar-thumb {*/
+/*    border-radius: 10px;*/
+/*    background: linear-gradient(180deg, #00c6fb, #005bea);*/
+/*}*/
+
+/**::-webkit-scrollbar-track {*/
+/*    -webkit-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.2) inset;*/
+/*    background-color: #1d181f;*/
+/*    border-radius: 10px;*/
+/*}*/
