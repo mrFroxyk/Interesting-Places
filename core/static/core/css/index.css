@@ -1,15 +1,13 @@
 nav {
-    /*background: #4ac1f7;*/
     background-image: url("../img/nav_fon_small.png");
     height: 223px;
     width: 1920px;
-    /*height: 100px;*/
-    /*width: 100px;*/
 }
 
 .wrapper {
-    background-image:url("../img/inf fon.jpg");
+    background-image: url("../img/inf fon.jpg");
     background-attachment: fixed;
+    min-height: 80vh;
 }
 
 .footer {

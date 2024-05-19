@@ -6,7 +6,8 @@
 {% block head %}
     <script src="https://api-maps.yandex.ru/2.1/?apikey=В26b914ca-5401-44b0-b136-b7d9c35bb1a8&lang=ru_RU"
             type="text/javascript"></script>
-
+    <script src="https://unpkg.com/@vkid/sdk@latest/dist-sdk/umd/index.js"></script>
+    <script src="{% static 'auth_vk/js/auth_vk.js' %}"></script>
     <script type="text/javascript">
         ymaps.ready(init);
 
@@ -84,8 +85,12 @@
         </div>
         <div class="memory-manager">
             <div class="memory-manager__action-button">
-                тут засунуть вк, если не ауф
-                Или предложение создать, если ауф
+                {% if request.user.is_authenticated %}
+                    Добавить воспоминание
+                {% else %}
+                    Хочется добавить новое воспоминание? Тогда жмякай по кнопке снизу
+                    <div id="VkIdSdkOneTap"></div>
+                {% endif %}
             </div>
             <div class="memory-manager__map" id="map" style="width: 90%; height: 400px;"></div>
         </div>

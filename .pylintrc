@@ -1,5 +1,6 @@
 [MASTER]
 load-plugins=pylint_django
 django-settings-module=core.settings
-disable=C0114
-ignore = .\map_manager\apps.py, manage.py
+disable=C0114, W1514, R0901
+ignore = manage.py, apps.py, 0001_initial.py
+max-line-length=120
