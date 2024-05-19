@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'map_manager.apps.MapManagerConfig',
+    'core.apps.CoreConfig',
 ]
 
 MIDDLEWARE = [
@@ -78,6 +80,15 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# чтобы для тестов запускалась не контейнеризированная бд,
+# к которой нет доступа у локального тестировщик 'python manage.py test'
+
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase'
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

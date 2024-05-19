@@ -2,4 +2,4 @@
 load-plugins=pylint_django
 django-settings-module=core.settings
 disable=C0114
-ignore = manage.py
+ignore = .\map_manager\apps.py, manage.py

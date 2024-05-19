@@ -1,0 +1,29 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'core/css/index.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'core/css/null-style.css' %}">
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+<nav>
+
+</nav>
+<div class="wrapper">
+    {% block content %}
+    {% endblock %}
+</div>
+<div class="footer">
+        <div><a href="https://t.me/mr_Sabaton4ik">tg: @mr_Sabaton4ik</a> </div>
+    <div><a href="https://github.com/mrFroxyk">git: mrFroxyk</a></div>
+
+</div>
+</body>
+</html>

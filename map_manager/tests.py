@@ -13,5 +13,5 @@ class SimpleTest(TestCase):
         """
         response = self.client.get(reverse('map_manager:test'))
         self.assertEqual(response.status_code, 200)
-        expected_text = "test"
+        expected_text = "Место для прекрасного воспоминания"
         self.assertContains(response, expected_text)

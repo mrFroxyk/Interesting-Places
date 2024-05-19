@@ -1,0 +1,67 @@
+.content {
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+    padding-bottom: 0;
+    overflow: hidden;
+}
+
+.places-column {
+    padding: 30px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    flex: 0 0 55%;
+    background: rgba(0, 0, 0, 0.45);
+
+    scroll-behavior: smooth;
+}
+
+.places-column__item {
+    font-size: 1.5em;
+    width: 100%;
+    background-color: white;
+    position: relative;
+    height: auto;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+.places-column__item::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    border: 2px solid #ffb424; /* Граница желтого цвета */
+    pointer-events: none; /* Чтобы псевдоэлемент не перекрывал содержимое */
+}
+
+.memory-manager {
+    flex: 0 0 45%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.memory-manager__action-button {
+    width: 90%;
+    font-size: 1.5em;
+    height: 100px;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.8);
+    color: rgb(255, 255, 255);
+    font-family: Inter, serif;
+    font-weight: 400;
+    line-height: 36px;
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 10px;
+}

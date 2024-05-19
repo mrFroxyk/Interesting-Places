@@ -1,11 +1,9 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+{% extends 'core/index.html' %}
+{% load static %}
 
+
+
+{% block head %}
     <script src="https://api-maps.yandex.ru/2.1/?apikey=В26b914ca-5401-44b0-b136-b7d9c35bb1a8&lang=ru_RU"
             type="text/javascript"></script>
 
@@ -43,7 +41,8 @@
 
         function addPlaceMark(coords) {
             balun = new ymaps.Placemark(coords, {
-                iconContent: 'Вызвать авиаудар'
+                iconContent: 'Вызвать авиаудар',
+                balloonContentBody: '<div><h2>Заголовок</h2><p>Это содержимое балуна с <strong>HTML</strong> разметкой.</p></div>'
             }, {
                 balloonPanelMaxMapArea: 0,
                 draggable: "true",
@@ -53,13 +52,44 @@
             myMap.geoObjects.add(balun);
         }
     </script>
-
-
-    <title>test map</title>
-</head>
+    <link rel="stylesheet" href="{% static 'map_manager/css/map.css' %}?={{ rand_num }}">
+{% endblock %}
 <body>
-test
-<div id="map" style="width: 600px; height: 400px;"></div>
-test
-</body>
-</html>
+
+{% block content %}
+    <div class="content">
+        <div class="places-column">
+            <div class="places-column__item">
+                <div class="places-column__tittle">
+                    Место для прекрасного воспоминания
+                </div>
+                <div class="places-column__img">
+                    <img src="" alt="">
+                </div>
+                <div class="places-column__content">
+                    Здесь могла бы быть отличное воспоминание
+                </div>
+            </div>
+            <div class="places-column__item">
+                <div class="places-column__tittle">
+                    Место для прекрасного воспоминания
+                </div>
+                <div class="places-column__img">
+                    <img src="" alt="">
+                </div>
+                <div class="places-column__content">
+                    Здесь могла бы быть отличное воспоминание
+                </div>
+            </div>
+        </div>
+        <div class="memory-manager">
+            <div class="memory-manager__action-button">
+                тут засунуть вк, если не ауф
+                Или предложение создать, если ауф
+            </div>
+            <div class="memory-manager__map" id="map" style="width: 90%; height: 400px;"></div>
+        </div>
+    </div>
+{% endblock %}
+
+
