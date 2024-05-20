@@ -1,15 +1,26 @@
 import json
 import urllib.request
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, reverse
 from django.conf import settings
+from django.contrib.auth import login, logout
+from .models import VkUser
 
 
-def login(request):
+def home_page_with_login(request):
     """
     Страница логина вк, пока что только тестовая
     """
-    return render(request, 'auth_vk/login.html')
+    return render(request, 'auth_vk/profile.html')
+
+
+def logout_user(request):
+    """
+    Страничка, на которую пользователя редиректит и выкидывает из
+    аккаунта, после чего его редиректит на главную страницу.
+    По факту юзер вообще не видит ее
+    """
+    logout(request)
+    return redirect(reverse('auth_vk:login'))
 
 
 def response_user_access_token(uuid, token):
@@ -45,6 +56,7 @@ def response_user_access_token(uuid, token):
 def get_user_data(access_token, fields):
     """
     По токенам пользователя получает его персональные данные
+    :param access_token: access_token полученный из silent токена
     :param fields: поля, которые нужно запросить https://dev.vk.com/ru/reference/objects/user
     :return: Имя и ссылку на картинку аватарки
     """
@@ -60,8 +72,9 @@ def get_user_data(access_token, fields):
     with urllib.request.urlopen(url_with_params) as response:
         response_data = response.read().decode()
         data = json.loads(response_data)['response'][0]
-        print(data)
-        return data
+        photo_url = data['photo_200']
+        full_name = data['first_name'] + ' ' + data['last_name']
+        return full_name, photo_url
 
 
 def auth(request):
@@ -75,5 +88,12 @@ def auth(request):
     token = payload['token']
 
     access_token, user_id, fields = response_user_access_token(uuid, token)
-    print(user_id)
-    return HttpResponse(str(get_user_data(access_token, fields)))
+    full_name, photo_url = get_user_data(access_token, fields)
+
+    try:
+        user = VkUser.objects.get(vk_id=user_id)
+    except VkUser.DoesNotExist:
+        user = VkUser.objects.create(username=user_id, vk_name=full_name, vk_photo_url=photo_url, vk_id=user_id)
+
+    login(request, user)
+    return redirect(reverse("map_manager:test"))

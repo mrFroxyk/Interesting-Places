@@ -1,0 +1,31 @@
+{% extends 'core/index.html' %}
+{% load static %}
+{% block head %}
+    <script src="https://unpkg.com/@vkid/sdk@latest/dist-sdk/umd/index.js"></script>
+    <script src="{% static 'auth_vk/js/auth_vk.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'auth_vk/css/login.css' %}?v=3">
+{% endblock %}
+
+{% block content %}
+    <div class="content" style="align-items: center">
+        {% if  request.user.is_authenticated %}
+            <div class="info-block">
+                Добрый день, {{ request.user.vk_name }}!
+            </div>
+            <a class="" href="{% url 'auth_vk:logout' %}">
+                <div class="logout_user">
+                    Выйти
+                </div>
+            </a>
+        {% else %}
+            <div class="info-block">
+                Добро пожаловать на мой учебный проект. Это простой сайт, который
+                хранит воспоминания о посещенных вами местах (допилить описание)
+                Чтобы воспользоваться сервисом, необходимо авторизоваться по кнопке ниже)
+            </div>
+            <div id="VkIdSdkOneTap"></div>
+        {% endif %}
+    </div>
+
+
+{% endblock %}

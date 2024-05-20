@@ -7,23 +7,34 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link rel="stylesheet" href="{% static 'core/css/index.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'core/css/index.css' %}?v=6">
     <link rel="stylesheet" href="{% static 'core/css/null-style.css' %}">
     {% block head %}
     {% endblock %}
 </head>
 <body>
-<nav>
-
-</nav>
+<div class="nav">
+    <div class="logo-container">
+        <img src="{% static 'core/img/logo.png' %}" alt="оч крутой лого, которому не суждено прогрузиться">
+    </div>
+    {% if  request.user.is_authenticated %}
+        <a href="{% url 'auth_vk:login' %}" class="profile">
+            <div class="profile__ava">
+                <img src="{{ request.user.vk_photo_url }}" alt="">
+            </div>
+            <div class="profile__username">
+                {{ request.user.vk_name }}
+            </div>
+        </a>
+    {% endif %}
+</div>
 <div class="wrapper">
     {% block content %}
     {% endblock %}
 </div>
 <div class="footer">
-        <div><a href="https://t.me/mr_Sabaton4ik">tg: @mr_Sabaton4ik</a> </div>
+    <div><a href="https://t.me/mr_Sabaton4ik">tg: @mr_Sabaton4ik</a></div>
     <div><a href="https://github.com/mrFroxyk">git: mrFroxyk</a></div>
-
 </div>
 </body>
 </html>

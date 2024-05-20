@@ -1,8 +1,9 @@
 from django.urls import path
-from .views import login, auth
+from .views import home_page_with_login, auth, logout_user
 
 app_name = "auth_vk"
 urlpatterns = [
-    path('login/', login, name='login'),
-    path('', auth, name='login'),
+    path('profile/', home_page_with_login, name='login'),
+    path('logout/', logout_user, name='logout'),
+    path('', auth, name='auth'),
 ]

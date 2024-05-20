@@ -1,13 +1,20 @@
-nav {
+.nav {
     background-image: url("../img/nav_fon_small.png");
     height: 223px;
-    width: 1920px;
+    /*width: 1920px;*/
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 10px;
 }
 
 .wrapper {
     background-image: url("../img/inf fon.jpg");
     background-attachment: fixed;
     min-height: 80vh;
+    padding: 5px;
 }
 
 .footer {
@@ -19,6 +26,40 @@ nav {
     color: white;
     font-size: 1em;
     height: 200px;
+}
+
+.logo-container > img {
+    margin-right: 20px;
+    height: 60px;
+    width: 60px;
+}
+
+.profile {
+    background-color: rgb(56 50 47 / 50%);
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    margin-right: 20px;
+}
+
+.profile:hover {
+    background-color: rgb(120 115 113 / 50%);
+}
+
+
+.profile__ava > img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+
+.profile__username {
+    color: white;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    padding-left: 5px;
 }
 
 /**::-webkit-scrollbar {*/

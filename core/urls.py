@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from auth_vk.views import home_page_with_login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('map/', include("map_manager.urls")),
     path('auth/', include("auth_vk.urls")),
+    path('', home_page_with_login, name='homepage')
 ]
