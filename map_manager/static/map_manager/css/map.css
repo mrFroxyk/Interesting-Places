@@ -6,6 +6,33 @@
     overflow: hidden;
 }
 
+.error_message {
+    display: none;
+    height: 100px;
+    min-width: 100px;
+    width: 50%;
+    background-color: rgba(15, 17, 29, 0.84);
+    color: white;
+    border-radius: 0 20px 0 20px;
+    position: fixed;
+    z-index: 100;
+    font-size: 1.3em;
+    padding: 10px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    left: 25%;
+}
+
+.error_message__close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #c5ccda00;
+    color: white;
+    font-size: 1.1em;
+}
+
 .places-column {
     padding: 30px;
     height: 100vh;
@@ -15,7 +42,7 @@
 
     flex: 0 0 55%;
     background: rgba(0, 0, 0, 0.45);
-
+    overflow: auto;
     scroll-behavior: smooth;
 }
 
@@ -29,6 +56,10 @@
     margin-bottom: 10px;
 }
 
+.places-column__item > div {
+    margin-bottom: 5px;
+}
+
 .places-column__item::before {
     content: '';
     position: absolute;
@@ -36,9 +67,76 @@
     right: 10px;
     bottom: 10px;
     left: 10px;
-    border: 2px solid #ffb424; /* Граница желтого цвета */
-    pointer-events: none; /* Чтобы псевдоэлемент не перекрывал содержимое */
+    border: 2px solid #ffb424;
+    pointer-events: none;
 }
+
+.places-column__tittle {
+    font-weight: bolder;
+}
+
+.places-column__content {
+    font-style: italic;
+}
+
+.places-column__img-item {
+    max-width: 100%;
+}
+
+textarea {
+    font-size: 16px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 90%;
+    box-sizing: border-box;
+    resize: none;
+    overflow: hidden;
+    min-height: 40px;
+}
+
+input {
+    font-size: 16px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 90%;
+    box-sizing: border-box;
+}
+
+.input-form__tittle {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+
+#inputForm {
+    position: relative;
+    font-size: 1.2em;
+}
+
+.input-form__item {
+    padding-bottom: 10px;
+}
+
+.input-form__submit-button{
+    height: 50px;
+    width: 50%;
+    font-size: 1em;
+    background-color: rgba(251,135,78,1);
+    position: relative;
+    left: 25%;
+    color: white;
+    border-radius: 10px 0 10px 0;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.5em;
+}
+
 
 .memory-manager {
     flex: 0 0 45%;
@@ -65,4 +163,11 @@
     margin-bottom: 30px;
     padding: 10px;
     flex-direction: column;
+}
+
+.memory-manager__action-button:hover {
+    background: rgba(56, 54, 54, 0.91);
+    -webkit-box-shadow: 11px 10px 8px 0px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 11px 10px 8px 0px rgba(34, 60, 80, 0.2);
+    box-shadow: 11px 10px 8px 0px rgba(34, 60, 80, 0.2);
 }

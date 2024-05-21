@@ -10,7 +10,8 @@
     <div class="content" style="align-items: center">
         {% if  request.user.is_authenticated %}
             <div class="info-block">
-                Добрый день, {{ request.user.vk_name }}!
+                <span>Добрый день, {{ request.user.vk_name }}!</span>
+                <span>Желаете взглянуть на  <a href="{% url 'map_manager:test' %}">хранилище воспоминаний?</a></span>
             </div>
             <a class="" href="{% url 'auth_vk:logout' %}">
                 <div class="logout_user">

@@ -43,8 +43,10 @@ def response_user_access_token(uuid, token):
 
     with urllib.request.urlopen(url_with_params) as response:
         response_data = response.read().decode()
-        data = json.loads(response_data)['response']
-        print(data)
+        response_data = json.loads(response_data)
+        print(response_data)  # for debug
+        data = response_data['response']
+        print(data)  # for debug
 
         access_token = data['access_token']
         user_id = data['user_id']
