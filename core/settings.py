@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'map_manager.apps.MapManagerConfig',
     'core.apps.CoreConfig',
     'auth_vk.apps.AuthVkConfig',
