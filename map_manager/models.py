@@ -11,4 +11,5 @@ class Memory(models.Model):
     image = models.ImageField(upload_to='images/')
     coord1 = models.DecimalField(max_digits=60, decimal_places=30)
     coord2 = models.DecimalField(max_digits=60, decimal_places=30)
-    author = models.ForeignKey(VkUser, on_delete=models.CASCADE)  # Связываем с моделью пользователя Django
+    author = models.ForeignKey(VkUser, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)

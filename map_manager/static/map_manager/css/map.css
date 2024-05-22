@@ -71,7 +71,21 @@
     pointer-events: none;
 }
 
+.places-column__action-menu {
+    /*position: absolute;*/
+    /*right: 10px;*/
+    align-self: flex-end;
+    display: flex;
+    /*flex-direction: row;*/
+    flex-direction: row-reverse;
+}
+
+.places-column__action-menu > button {
+    font-size: 1em;
+}
+
 .places-column__tittle {
+    font-size: 1em;
     font-weight: bolder;
 }
 
@@ -81,6 +95,18 @@
 
 .places-column__img-item {
     max-width: 100%;
+}
+
+.places-column__save-button {
+    height: 50px;
+    width: 50%;
+    font-size: 1em;
+    background-color: rgba(251, 135, 78, 1);
+    position: relative;
+    left: 25%;
+    color: white;
+    border-radius: 10px 0 10px 0;
+    margin-top: 10px;
 }
 
 textarea {
@@ -119,11 +145,11 @@ input {
     padding-bottom: 10px;
 }
 
-.input-form__submit-button{
+.input-form__submit-button {
     height: 50px;
     width: 50%;
     font-size: 1em;
-    background-color: rgba(251,135,78,1);
+    background-color: rgba(251, 135, 78, 1);
     position: relative;
     left: 25%;
     color: white;

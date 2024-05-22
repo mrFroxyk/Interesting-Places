@@ -8,217 +8,101 @@
             type="text/javascript"></script>
     <script src="https://unpkg.com/@vkid/sdk@latest/dist-sdk/umd/index.js"></script>
     <script src="{% static 'auth_vk/js/auth_vk.js' %}"></script>
-    <script defer async type="text/javascript">
-        ymaps.ready(init);
-
-        let isPlaceMarkCreated = false
-        let balun = null // контейнер, куда положим балун синглтон
-        let myMap = null;
-        let memoryCoords = null;
-
-        function loadMemoriesDataFromServer() {
+    <script src="{% static 'map_manager/js/renderPlaces.js' %}"></script>
+    <script src="{% static 'map_manager/js/formManager.js' %}"></script>
+    <script>
+        function createPlaceMark(coords, coord1Node, coord2Node) {
             /**
-             * Подгружает и рендерит точки на карту
+             * создание балуна воспоминания на карте редактирования
+             * @type {ymaps.Placemark}
              */
-            function addPlaceMarkMemoriToMap(coords, memories_id, imageHrf = null) {
-                /**
-                 * Добавляет на карту балун с картинкой ( если есть ) или обычный
-                 * указатель в противном случае. Создает обработчик, чтобы при нажатии
-                 * на хинт лента листалась к воспоминанию
-                 * coords - массив из 2 координат
-                 * memories_id - id воспоминания. Без #
-                 * imageHrf - ссылка на картинку /media/img/...
-                 */
-                let balun = null;
-                if (imageHrf) {
-                    const imageLayer = {
-                        iconLayout: 'default#imageWithContent',
-                        iconImageOffset: [-25, -50],
-                        iconContentLayout: ymaps.templateLayoutFactory.createClass(
-                            '<div style="width: 40px; border: #0f0f0f 2px solid; overflow: hidden; height: 60px; ' +
-                            'background-image: url(' + imageHrf + '); background-size: cover; ' +
-                            'background-repeat: no-repeat;' +
-                            'background-position: center; border-radius: 5px 0 5px 0;"></div>'
-                        )
-                    }
-                    balun = new ymaps.Placemark(coords, {
-                        hintContent: 'Кликните, чтобы перейти к воспоминанию '
-                    }, imageLayer)
-                } else {
-                    balun = new ymaps.Placemark(coords, {
-                        hintContent: 'Кликните, чтобы перейти к воспоминанию '
-                    })
-                }
-
-
-                balun.events.add('click', () => {
-                    /**
-                     * Обработчик, который лестает ленту и запрещает листать экран
-                     */
-                    if (window.location.hash.slice(1) === memories_id) {
-                        const currentScrollY = window.scrollY;
-                        window.location.hash = 'firs-el'
-                        window.scrollTo({
-                            top: currentScrollY,
-                        });
-                    } else {
-                        const currentScrollY = window.scrollY;
-                        window.location.hash = memories_id
-                        window.scrollTo({
-                            top: currentScrollY,
-                        });
-                    }
-                })
-
-                myMap.geoObjects.add(balun);
-            }
-
-            const dataUrl = 'https://sabaton-enjoyer.online/map/get-place-marks-data-list/'
-            fetch(dataUrl)
-                .then(response => response.json())
-                .then(jsonData => {
-                    jsonData.forEach((item) => {
-                        const coords = [item.coord1, item.coord2]
-                        const memories_id = 'memories_' + item.id
-                        addPlaceMarkMemoriToMap(coords, memories_id, item.image)
-                    })
-                })
-
-        }
-
-        function init() {
-            myMap = new ymaps.Map("map", {
-                center: [55.76, 37.64],
-                zoom: 5
-            });
-
-            myMap.controls.add('zoomControl');
-            myMap.controls.add('typeSelector');
-            myMap.controls.add('searchControl');
-
-            myMap.events.add('click', function (e) {
-                let coords = e.get('coords');
-                actionAfterPlaceMarkChangePos(coords)
-            });
-
-            loadMemoriesDataFromServer()
-        }
-
-        function addPlaceMark(coords) {
-            balun = new ymaps.Placemark(coords, {
-                iconContent: 'Место для воспоминания',
+            const placeMark = new ymaps.Placemark(coords, {
+                iconContent: 'Двигай меня',
             }, {
                 balloonPanelMaxMapArea: 0,
                 draggable: "true",
                 preset: "islands#blueStretchyIcon",
             })
 
-            balun.events.add('dragend', function (e) {
-                let coords = balun.geometry.getCoordinates();
-                actionAfterPlaceMarkChangePos(coords)
+            placeMark.events.add('dragend', function (e) {
+                let coords = placeMark.geometry.getCoordinates();
+                movePlaceMarkAndRenderCoord(coords, placeMark, coord1Node, coord2Node)
+            })
+            return placeMark
+        }
+
+
+        function movePlaceMarkAndRenderCoord(coords, placeMark, coord1Node, coord2Node) {
+            mapWithPlaces.panTo(coords, {duration: 500});
+            placeMark.geometry.setCoordinates(coords);
+            coord1Node.value = coords[0]
+            coord2Node.value = coords[1]
+        }
+
+        function initMap(mapId, balunCoords, coord1Node, coord2Node) {
+            /**
+             * Инициализирует карту с балуном на месте воспоминания, который можно двигать
+             * и сохранить в память новые воспоминания
+             */
+            ymaps.ready(() => {
+                const editMap = new ymaps.Map(mapId, {
+                    center: [55.76, 37.64],
+                    zoom: 5
+                });
+                const placeMark = createPlaceMark(balunCoords, coord1Node, coord2Node)
+                editMap.geoObjects.add(placeMark);
+
+                editMap.events.add('click', function (e) {
+                    let coords = e.get('coords');
+                    movePlaceMarkAndRenderCoord(coords, placeMark, coord1Node, coord2Node)
+                });
             });
-
-            myMap.geoObjects.add(balun);
         }
 
-        function actionAfterPlaceMarkChangePos(coords) {
+        function handleEditClick(e) {
             /**
-             * При любом изменении позици балуна измененяет координаты
-             * в памяти
+             * при нажатии на кнопку редачить появляется карта, на которой можно поменять
+             * местоположение метки и поменять все остальные поля (кроме картинки)
              */
+            e.preventDefault()
+            const parentForm = e.target.parentNode.parentNode
+            const submitButton = parentForm.querySelector('.places-column__save-button')
+            const coordsBlock = parentForm.querySelector('.places-column__coords-manager')
+            const editMap = parentForm.querySelector('.memory-manager__map')
+            const coord1Node = parentForm.querySelector('.places-column__coords1')
+            const coord2Node = parentForm.querySelector('.places-column__coords2')
+            if (coordsBlock.style.display !== 'block') {
+                // Если менюшка была закрыта
+                coordsBlock.style.display = 'block'
+                submitButton.style.display = 'block'
+                let coords = [parseFloat(coord1Node.value), parseFloat(coord2Node.value)]
+                initMap(editMap.id, coords, coord1Node, coord2Node)
 
-            if (isPlaceMarkCreated) {
-                myMap.panTo(coords, {duration: 500});
-                balun.geometry.setCoordinates(coords);
-            } else {
-                addPlaceMark(coords)
-                isPlaceMarkCreated = true
+                const inputTitle = parentForm.querySelector('.places-column__tittle')
+                const inputContent = parentForm.querySelector('.places-column__content')
+                inputTitle.removeAttribute('readonly')
+                inputContent.removeAttribute('readonly')
             }
-            setCoords(coords)
-            openForm()
-            memoryCoords = coords
+
         }
 
-        function setCoords(coords) {
+        document.addEventListener('DOMContentLoaded', () => {
             /**
-             * Рендерит координаты внутри формы и сохраняет их в
-             * в DOM дереве
+             * Для каждой кнопки эдита добавляет обработчик нажатия
+             * и скрывает меню эдита (из карты и координат)
              */
-            const firstCoordDom = document.querySelector('.input-form__coords1')
-            const secondCoordDom = document.querySelector('.input-form__coords2')
-            firstCoordDom.value = coords[0]
-            secondCoordDom.value = coords[1]
-        }
+            let editButtonList = document.querySelectorAll('.places-column__edit-button')
+            editButtonList.forEach((item) => {
+                const parentForm = item.parentNode.parentNode
+                const submitButton = parentForm.querySelector('.places-column__save-button')
+                const coordsBlock = parentForm.querySelector('.places-column__coords-manager')
 
-        function openForm() {
-            /**
-             * Рендерит первым элементов форму, где можно создать
-             * воспоминание
-             */
-            inputForm.style.display = 'block';
-            scrollArea.scroll(10, 10)
-        }
-
-        function closeForm() {
-            /**
-             * Закрывает форму (визуально она пропадает
-             */
-            inputForm.style.display = 'none';
-        }
-
-        let inputForm = null
-        let newMemoriesButton = null
-        let closeButton = null
-        let formCoords = null
-        let submitButton = null
-        let isOpenNewPlaceForm = false
-        let htmlForm = null;
-        let scrollArea = null;
-
-        window.onload = () => {
-            inputForm = document.getElementById("inputForm")
-            htmlForm = document.querySelector('.input-form')
-            newMemoriesButton = document.getElementById('new-memories-button')
-            closeButton = document.querySelector('.close-button')
-            formCoords = document.querySelector('.input-form__coords')
-            submitButton = document.querySelector('.input-form__submit-button')
-            scrollArea = document.querySelector('.places-column')
-
-            const errorMessageCloseButton = document.querySelector(".error_message__close-button")
-            const errorMessage = document.querySelector(".error_message")
-            errorMessageCloseButton.addEventListener('click', () => {
-                errorMessage.style.display = 'none'
-            })
-            closeForm()
-
-            newMemoriesButton.addEventListener('click', () => {
-                openForm()
+                coordsBlock.style.display = 'none'
+                submitButton.style.display = 'none'
+                item.addEventListener('click', handleEditClick)
             })
 
-            closeButton.addEventListener('click', () => {
-                closeForm()
-            })
-
-            htmlForm.onsubmit = (event) => {
-                event.preventDefault()
-                if (validateInputData()) {
-                    event.currentTarget.submit()
-                } else {
-                    errorMessage.style.display = 'flex'
-                }
-            }
-        }
-
-        function validateInputData() {
-            /**
-             * Валидирует данные, введенные юзером, в будущем должно
-             * 1) выводить подсказки, что не так
-             * 2) проверять наличие заголовка и тип файла
-             */
-            console.log(memoryCoords)
-            return !!memoryCoords;
-        }
-
+        })
 
     </script>
     <link rel="stylesheet" href="{% static 'map_manager/css/map.css' %}?={{ rand_num }}">
@@ -245,7 +129,7 @@
 
                     <div class="input-form__item">
                         <div class="input-form__tittle">
-                            В двух словах, что за воспоминание (макс 100 символов)
+                            Название (макс 100 символов)
                         </div>
                         <label>
                             <input required maxlength="100" name="title" type="text"
@@ -255,10 +139,11 @@
 
                     <div class="input-form__item">
                         <div class="input-form__tittle">
-                            Словесно не ограниченное лирическое описание воспоминания
+                            Комментарий
                         </div>
                         <label>
-                            <textarea name="content" cols="40" rows="10" required id="id_content"></textarea>
+                            <textarea placeholder="Словесно не ограниченное лирическое описание воспоминания"
+                                      name="content" cols="40" rows="10" required id="id_content"></textarea>
                         </label>
                     </div>
 
@@ -272,12 +157,17 @@
                     </div>
 
                     <div class="input-form__item">
+                        <div class="input-form__tittle">
+                            Геопозиция воспоминания
+                        </div>
+                        (жмякни на карту)
                         <label>
                             <input readonly step="any" class="input-form__coords1" type="number" name="coord1"
                                    id="id_coord1">
                             <input readonly step="any" class="input-form__coords2" type="number" name="coord2"
                                    id="id_coord2">
                         </label>
+                        <div class="memory-manager__map" id="formMap" style="width: 90%; height: 400px;"></div>
                     </div>
                     <button class="input-form__submit-button" type="submit">Сохранить</button>
                 </form>
@@ -286,19 +176,50 @@
 
             {% if memory_list %}
                 {% for memory in memory_list %}
-                    <div class="places-column__item" id="memories_{{ memory.pk }}">
-                        <div class="places-column__tittle">
-                            {{ memory.title }}
+                    <form class="places-column__item" id="memories_{{ memory.pk }}" method="post"
+                          action="{% url 'map_manager:update_memories' id=memory.pk %}">
+                        {% csrf_token %}
+                        <div class="places-column__action-menu">
+                            <button class="places-column__edit-button">
+                                ✏️
+                            </button>
+                            {#                            <button class="places-column__delete-button">#}
+                            {#                                🗑️#}
+                            {#                            </button>#}
                         </div>
+                        <label>
+                            <input readonly class="places-column__tittle" required maxlength="100" name="title"
+                                   type="text"
+                                   value="{{ memory.title }}">
+                        </label>
                         <div class="places-column__img">
                             {% if memory.image %}
                                 <img class="places-column__img-item" src="{{ memory.image.url }}" alt="">
                             {% endif %}
                         </div>
-                        <div class="places-column__content">
-                            {{ memory.content }}
+                        <label>
+                            <input readonly class="places-column__content" required maxlength="100" name="content"
+                                   type="text"
+                                   value="{{ memory.content }}">
+                        </label>
+
+                        <div class="places-column__coords-manager">
+                            <div class="places-column__tittle">
+                                Геопозиция воспоминания
+                            </div>
+                            (жмякни на карту)
+                            <label>
+                                <input readonly value="{{ memory.coord1 }}" step="any" class="places-column__coords1"
+                                       type="number" name="coord1">
+                                <input readonly value="{{ memory.coord2 }}" step="any" class="places-column__coords2"
+                                       type="number" name="coord2">
+                            </label>
+                            <div class="memory-manager__map" id="editMap_{{ memory.pk }}"
+                                 style="width: 90%; height: 400px;"></div>
                         </div>
-                    </div>
+
+                        <button class="places-column__save-button" type="submit">Сохранить</button>
+                    </form>
                 {% endfor %}
 
             {% else %}
@@ -321,7 +242,7 @@
                 <button id="new-memories-button" class="memory-manager__action-button">
                     Добавить воспоминание
                 </button>
-                <div class="memory-manager__map" id="map" style="width: 90%; height: 400px;"></div>
+                <div class="memory-manager__map" id="mapWithPlaces" style="width: 90%; height: 400px;"></div>
             </div>
         {% else %}
             <div class="memory-manager">
@@ -329,7 +250,7 @@
                     Хочется добавить новое воспоминание? Тогда жмякай по кнопке снизу
                     <div id="VkIdSdkOneTap"></div>
                 </div>
-                <div class="memory-manager__map" id="map" style="width: 90%; height: 400px;"></div>
+                <div class="memory-manager__map" id="mapWithPlaces" style="width: 90%; height: 400px;"></div>
             </div>
         {% endif %}
     </div>
