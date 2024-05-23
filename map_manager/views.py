@@ -1,5 +1,4 @@
 import random
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -24,42 +23,46 @@ def update_view(request, pk):
     Update метод для воспоминания
     :param pk: pk воспоминания
     """
-    instance = Memory.objects.get(pk=pk)
-    print(request.POST)
+
     if request.method == 'POST':
-        form = MemoryForm(request.POST, instance=instance)
-        # if form.is_valid():
-        print(form.errors)
-        form.save()
-        print('Успешное обновление данных')
+        user = request.user
+        instance = Memory.objects.filter(pk=pk).first()
+        if instance and instance.author == user:
+            form = MemoryForm(request.POST, instance=instance)
+            if form.is_valid():
+                form.save()
     return redirect(reverse('map_manager:test'))
 
 
-def index(request):
+def create_memory(request):
     """
-    Тестовая страница
+    Метод для создания воспоминания
     """
-    user = request.user
-    if user.username not in ['528396568', '211604310']:
-        return HttpResponse("Страница засекречена)))00)00)")
 
     if request.method == 'POST':
-        print(request.POST)
         form = MemoryForm(request.POST, request.FILES)
         if form.is_valid():
             memory = form.save(commit=False)
             memory.author = request.user
             memory.save()
-        else:
-            print("ERROR, can't save memories", request.POST)
+    return redirect(reverse('map_manager:test'))
 
+
+def main_map_page(request):
+    """
+    Ключевая страница с воспоминаниями. Здесь юзеру выводятся все его воспоминания
+    (или пишется, что их нет) и есть форма для создания новых
+    """
+    user = request.user
+    if user.is_authenticated:
+        memory_list = Memory.objects.filter(author=user).order_by('-created_at')
+    else:
+        memory_list = None
     rand_num = random.randint(1, 1000)
-    form = MemoryForm()
-    memory_list = Memory.objects.filter(author=user).order_by('-created_at')
+
     context = {
         'memory_list': memory_list,
         'rand_num': rand_num,
-        'form': form
     }
 
-    return render(request, 'map_manager/test.html', context)
+    return render(request, 'map_manager/main_map_page.html', context)

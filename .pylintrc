@@ -1,6 +1,6 @@
 [MASTER]
 load-plugins=pylint_django
 django-settings-module=core.settings
-disable=C0114, W1514, R0901
+disable=C0114, W1514, R0901, R0913
 ignore = manage.py, apps.py, 0001_initial.py, 0002_memory_created_at.py
 max-line-length=120
