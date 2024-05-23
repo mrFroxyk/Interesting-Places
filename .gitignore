@@ -2,3 +2,4 @@
 *.pyc
 *.iml
 settings.json
+/static/

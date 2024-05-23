@@ -72,8 +72,14 @@ function openForm() {
      * Рендерит первым элементов форму, где можно создать
      * воспоминание
      */
+
+    const mediaQuery = window.matchMedia('(max-width: 700px)')
     inputForm.style.display = 'block';
     scrollArea.scroll(10, 10)
+    if (mediaQuery.matches) {
+        window.location.hash = ''
+        window.location.hash = 'inputForm'
+    }
 }
 
 function closeForm() {

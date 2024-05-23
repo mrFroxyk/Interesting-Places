@@ -6,14 +6,22 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      DEBUG: False
       DB_NAME: django
       DB_USER: admin
       DB_PASSWORD: admin
     volumes:
       - .:/code
+      - static_media:/code/static
+      - static_media:/code/media
     ports:
-      - "5000:5000"
-    command: ["python", "manage.py", "runserver", "0.0.0.0:5000"]
+      - "5001:5001"
+    depends_on:
+      - db
+      #    command: [ "bash", "-c", "/code/start.sh" ]
+      #    command: [ "gunicorn", "core.wsgi:application", "--workers", "2" ]
+      #    command: [ "python", "manage.py", "runserver", "0.0.0.0:5000" ]
+
 
   db:
     image: postgres:latest
@@ -26,5 +34,17 @@ services:
     volumes:
       - pgdbdata:/var/lib/postgresql/data/
 
+  nginx:
+    image: nginx:latest
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - static_media:/usr/share/nginx/html/static:ro
+      - static_media:/usr/share/nginx/html/media:ro
+    depends_on:
+      - web
+
 volumes:
   pgdbdata: null
+  static_media: null

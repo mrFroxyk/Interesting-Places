@@ -197,3 +197,10 @@ input {
     -moz-box-shadow: 11px 10px 8px 0px rgba(34, 60, 80, 0.2);
     box-shadow: 11px 10px 8px 0px rgba(34, 60, 80, 0.2);
 }
+
+@media (max-width: 700px) {
+    .content {
+        display: flex;
+        flex-direction: column;
+    }
+}

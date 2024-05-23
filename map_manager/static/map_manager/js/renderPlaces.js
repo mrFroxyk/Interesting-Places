@@ -40,18 +40,25 @@ function loadMemoriesDataFromServer() {
             /**
              * Обработчик, который лестает ленту и запрещает листать экран
              */
+            const mediaQuery = window.matchMedia('(max-width: 700px)')
+
             if (window.location.hash.slice(1) === memories_id) {
                 const currentScrollY = window.scrollY;
                 window.location.hash = 'firs-el'
-                window.scrollTo({
-                    top: currentScrollY,
-                });
+                if (!mediaQuery.matches) {
+                    window.scrollTo({
+                        top: currentScrollY,
+                    });
+                }
+
             } else {
                 const currentScrollY = window.scrollY;
                 window.location.hash = memories_id
-                window.scrollTo({
-                    top: currentScrollY,
-                });
+                if (!mediaQuery.matches) {
+                    window.scrollTo({
+                        top: currentScrollY,
+                    });
+                }
             }
         })
 

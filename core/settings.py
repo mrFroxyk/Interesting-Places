@@ -24,9 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-mb$b#h60n$xfxt8jfp-yq4u0p$0ya%4+#vgux#k^gzoldrrrcu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if os.environ.get('DEBUG') == 'false':
+    DEBUG = False
+else:
+    DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "sabaton-enjoyer.online"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "sabaton-enjoyer.online"]
 
 CSRF_TRUSTED_ORIGINS = ["https://sabaton-enjoyer.online"]
 

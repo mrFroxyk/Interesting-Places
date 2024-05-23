@@ -3,7 +3,7 @@
 {% block head %}
     <script src="https://unpkg.com/@vkid/sdk@latest/dist-sdk/umd/index.js"></script>
     <script src="{% static 'auth_vk/js/auth_vk.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'auth_vk/css/login.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'auth_vk/css/profile.css' %}?v=8">
 {% endblock %}
 
 {% block content %}
@@ -11,6 +11,12 @@
         {% if  request.user.is_authenticated %}
             <div class="info-block">
                 <span>Добрый день, {{ request.user.vk_name }}!</span>
+                <span style="text-align: left">Это простой сайт, который
+                хранит воспоминания о посещенных вами местах на карте с привязкой к месту,
+                Чтобы воспользоваться сервисом, необходимо авторизоваться по кнопке ниже)</span>
+                <br>
+                <img src="{% static 'auth_vk/media/demo.gif' %}" alt="">
+                <br>
                 <span>Желаете взглянуть на  <a href="{% url 'map_manager:test' %}">хранилище воспоминаний?</a></span>
             </div>
             <a class="" href="{% url 'auth_vk:logout' %}">
@@ -20,9 +26,14 @@
             </a>
         {% else %}
             <div class="info-block">
-                Добро пожаловать на мой учебный проект. Это простой сайт, который
-                хранит воспоминания о посещенных вами местах (допилить описание)
-                Чтобы воспользоваться сервисом, необходимо авторизоваться по кнопке ниже)
+                <h3>Добро пожаловать на мой учебный проект!</h3>
+                <span style="text-align: left">Это простой сайт, который
+                хранит воспоминания о посещенных вами местах на карте с привязкой к месту,
+                Чтобы воспользоваться сервисом, необходимо авторизоваться по кнопке ниже)</span>
+                <br>
+                <img src="{% static 'auth_vk/media/demo.gif' %}" alt="">
+                <br>
+                <span>Желаете взглянуть на  <a href="{% url 'map_manager:test' %}">хранилище воспоминаний?</a></span>
             </div>
             <div id="VkIdSdkOneTap"></div>
         {% endif %}
